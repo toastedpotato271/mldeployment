@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iris Model Predictor</title>
+</head>
+<body>
+<h1>Iris Species Predictor</h1>
+<label>Sepal Length: <input type="number" id="sepalLength" step="0.1"></label><br>
+<label>Sepal Width: <input type="number" id="sepalWidth" step="0.1"></label><br>
+<label>Petal Length: <input type="number" id="petalLength" step="0.1"></label><br>
+<label>Petal Width: <input type="number" id="petalWidth" step="0.1"></label><br>
+<button onclick="predictSpecies()">Predict</button>
+<h2 id="result">Prediction: </h2>
+<script>
+async function predictSpecies() {
+// Get the feature values
+const sepalLength = parseFloat(document.getElementById('sepalLength').value);
+const sepalWidth = parseFloat(document.getElementById('sepalWidth').value);
+const petalLength = parseFloat(document.getElementById('petalLength').value);
+const petalWidth = parseFloat(document.getElementById('petalWidth').value);
+// Check for NaN inputs
+if (isNaN(sepalLength) || isNaN(sepalWidth) || isNaN(petalLength) || isNaN(petalWidth)) {
+document.getElementById('result').textContent = 'Please enter valid numbers for all fields.';
+return;
+}
+// Prepare the data for the POST request
+const response = await fetch("http://localhost:5000/predict", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ features: [sepalLength, sepalWidth, petalLength, petalWidth] })
+});
+const data = await response.json();
+const species = ["Setosa", "Versicolor", "Virginica"];
+document.getElementById('result').textContent = `Prediction: ${species[data.prediction]}`;
+}
+</script>
+</body>
+</html>
